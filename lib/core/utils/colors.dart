@@ -7,4 +7,5 @@ class ProjectColors {
   static Color black = const Color(0xff121212);
   static Color grey = const Color(0xffB4AAAA);
   static Color white = Colors.white;
+  static Color green = Colors.green;
 }

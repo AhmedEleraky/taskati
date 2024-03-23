@@ -65,7 +65,7 @@ class _LoginViewState extends State<LoginView> {
                 const Gap(30),
                 CustomButton(
                   onPressed: () {
-                    uploadFromCamer();
+                    uploadFromCamera();
                   },
                   text: 'Upload form Camera',
                 ),
@@ -95,7 +95,7 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  uploadFromCamer() async {
+  uploadFromCamera() async {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.camera);
 

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:taskati/core/services/local_storage.dart';
-import 'package:taskati/core/utils/colors.dart';
-import 'package:taskati/features/home/presentation/views/splash_view.dart';
+import 'package:taskati/core/themes/themes.dart';
+import 'package:taskati/features/data/task_model.dart';
+import 'package:taskati/features/splash_view.dart';
 
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox('user');
+  Hive.registerAdapter(TaskModelAdapter());
+  await Hive.openBox<TaskModel>('task');
   ProjectLocalStorage().init();
   runApp(const MainApp());
 }
@@ -16,31 +19,17 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        inputDecorationTheme: InputDecorationTheme(
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: ProjectColors.primary, width: 2)),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: ProjectColors.primary, width: 2)),
-          errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: ProjectColors.red, width: 2)),
-          focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: ProjectColors.red, width: 2)),
-        ),
-      ),
-      darkTheme: ThemeData(
-          scaffoldBackgroundColor: ProjectColors.black,
-          appBarTheme: AppBarTheme(
-            backgroundColor: ProjectColors.black,
-          )),
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      home: const SplashView(),
-    );
+    return ValueListenableBuilder(
+        valueListenable: Hive.box('user').listenable(),
+        builder: (context, box, child) {
+          bool darkMode = box.get('darkMode', defaultValue: false);
+          return MaterialApp(
+            theme: AppThemes.appLightTheme,
+            darkTheme: AppThemes.appDarkTheme,
+            themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+            debugShowCheckedModeBanner: false,
+            home: const SplashView(),
+          );
+        });
   }
 }

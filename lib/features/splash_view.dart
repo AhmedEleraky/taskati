@@ -4,9 +4,10 @@ import 'package:lottie/lottie.dart';
 import 'package:taskati/core/constants/asset_image.dart';
 import 'package:taskati/core/function/routing.dart';
 import 'package:taskati/core/services/local_storage.dart';
+import 'package:taskati/core/utils/colors.dart';
 import 'package:taskati/core/utils/text_style.dart';
 import 'package:taskati/features/home/presentation/views/home_view.dart';
-import 'package:taskati/features/home/presentation/views/login_view.dart';
+import 'package:taskati/features/upload/upload_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -41,7 +42,8 @@ class _SplashViewState extends State<SplashView> {
             const Gap(20),
             Text(
               'It\'s time to get organized',
-              style: getbodyStyle(),
+              style: getbodyStyle(
+                  color: ProjectColors.grey),
             ),
           ],
         ),

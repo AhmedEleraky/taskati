@@ -1,32 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:taskati/core/function/routing.dart';
+import 'package:taskati/core/services/local_storage.dart';
 import 'package:taskati/core/utils/colors.dart';
 import 'package:taskati/core/utils/text_style.dart';
 import 'package:taskati/core/widgets/custom_button.dart';
+import 'package:taskati/features/data/task_model.dart';
+import 'package:taskati/features/home/presentation/views/home_view.dart';
 
 class AddTaskView extends StatefulWidget {
-  const AddTaskView({super.key});
+  const AddTaskView({super.key, this.model});
+  final TaskModel? model;
 
   @override
   State<AddTaskView> createState() => _AddTaskViewState();
 }
 
 class _AddTaskViewState extends State<AddTaskView> {
-  var date = DateFormat.yMd().format(DateTime.now());
-  var startTime = DateFormat('hh:mm: a').format(DateTime.now());
+  var titleController = TextEditingController();
+  var noteController = TextEditingController();
+  var date = DateFormat('dd/MM/yyyy').format(DateTime.now());
+  String? startTime = DateFormat('hh:mm: a').format(DateTime.now());
   var endTime = DateFormat('hh:mm: a')
       .format(DateTime.now().add(const Duration(minutes: 30)));
   int color = 0;
+
+  @override
+  void initState() {
+    titleController = TextEditingController(text: widget.model?.title);
+    noteController = TextEditingController(text: widget.model?.note);
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final box = Hive.box('user');
+    var darkMode = box.get('darkMode');
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: ProjectColors.primary,
         centerTitle: true,
-        leading: Icon(
-          Icons.arrow_back_ios,
-          color: ProjectColors.primary,
-        ),
         title: Text('Add Task', style: getTitleStyle()),
       ),
       body: Padding(
@@ -37,25 +53,45 @@ class _AddTaskViewState extends State<AddTaskView> {
             children: [
               Text(
                 'Title',
-                style: getTitleStyle(color: ProjectColors.black),
+                style: getTitleStyle(
+                    color:
+                        darkMode ? ProjectColors.white : ProjectColors.primary),
               ),
               TextFormField(
-                decoration: const InputDecoration(hintText: 'Enter title here'),
+                controller: titleController,
+                decoration: InputDecoration(
+                  hintText: 'Enter title here',
+                  hintStyle: TextStyle(
+                      color:
+                          darkMode ? ProjectColors.white : ProjectColors.black),
+                ),
               ),
               const Gap(10),
               Text(
                 'Note',
-                style: getTitleStyle(color: ProjectColors.black),
+                style: getTitleStyle(
+                    color:
+                        darkMode ? ProjectColors.white : ProjectColors.primary),
               ),
               TextFormField(
-                decoration: const InputDecoration(hintText: 'Enter note here'),
+                controller: noteController,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText: 'Enter note here',
+                  hintStyle: TextStyle(
+                      color:
+                          darkMode ? ProjectColors.white : ProjectColors.black),
+                ),
               ),
               const Gap(10),
               Text(
                 'Date',
-                style: getTitleStyle(color: ProjectColors.black),
+                style: getTitleStyle(
+                    color:
+                        darkMode ? ProjectColors.white : ProjectColors.primary),
               ),
               TextFormField(
+                readOnly: true,
                 onTap: () {
                   showDatePicker(
                           context: context,
@@ -65,14 +101,20 @@ class _AddTaskViewState extends State<AddTaskView> {
                       .then((value) {
                     if (value != null) {
                       setState(() {
-                        date = DateFormat.yMd().format(value);
+                        date = widget.model != null
+                            ? widget.model!.date
+                            : DateFormat('dd/MM/yyyy').format(value);
                       });
                     } else {}
                   });
                 },
                 decoration: InputDecoration(
-                    suffixIcon: const Icon(Icons.calendar_month_outlined),
-                    hintText: date),
+                  suffixIcon: const Icon(Icons.calendar_month_outlined),
+                  hintText: date,
+                  hintStyle: TextStyle(
+                      color:
+                          darkMode ? ProjectColors.white : ProjectColors.black),
+                ),
               ),
               const Gap(20),
               Row(
@@ -80,14 +122,20 @@ class _AddTaskViewState extends State<AddTaskView> {
                   Expanded(
                     child: Text(
                       'Start Time',
-                      style: getTitleStyle(color: ProjectColors.black),
+                      style: getTitleStyle(
+                          color: darkMode
+                              ? ProjectColors.white
+                              : ProjectColors.primary),
                     ),
                   ),
                   const Gap(10),
                   Expanded(
                     child: Text(
                       'End Time',
-                      style: getTitleStyle(color: ProjectColors.black),
+                      style: getTitleStyle(
+                          color: darkMode
+                              ? ProjectColors.white
+                              : ProjectColors.primary),
                     ),
                   ),
                 ],
@@ -97,6 +145,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                 children: [
                   Expanded(
                     child: TextFormField(
+                      readOnly: true,
                       onTap: () {
                         showTimePicker(
                           context: context,
@@ -110,13 +159,19 @@ class _AddTaskViewState extends State<AddTaskView> {
                         });
                       },
                       decoration: InputDecoration(
-                          suffixIcon: const Icon(Icons.watch_later_outlined),
-                          hintText: startTime),
+                        suffixIcon: const Icon(Icons.watch_later_outlined),
+                        hintText: startTime,
+                        hintStyle: TextStyle(
+                            color: darkMode
+                                ? ProjectColors.white
+                                : ProjectColors.black),
+                      ),
                     ),
                   ),
                   const Gap(10),
                   Expanded(
                     child: TextFormField(
+                      readOnly: true,
                       onTap: () {
                         showTimePicker(
                           context: context,
@@ -130,8 +185,13 @@ class _AddTaskViewState extends State<AddTaskView> {
                         });
                       },
                       decoration: InputDecoration(
-                          suffixIcon: const Icon(Icons.watch_later_outlined),
-                          hintText: endTime),
+                        suffixIcon: const Icon(Icons.watch_later_outlined),
+                        hintText: endTime,
+                        hintStyle: TextStyle(
+                            color: darkMode
+                                ? ProjectColors.white
+                                : ProjectColors.black),
+                      ),
                     ),
                   ),
                 ],
@@ -167,7 +227,21 @@ class _AddTaskViewState extends State<AddTaskView> {
                   const Spacer(),
                   CustomButton(
                     text: 'Create Task',
-                    onPressed: () {},
+                    onPressed: () {
+                      String id = '${titleController.text}${DateTime.now()}';
+                      ProjectLocalStorage.casheTask(
+                          id,
+                          TaskModel(
+                              id: id,
+                              title: titleController.text,
+                              note: noteController.text,
+                              date: date,
+                              startTime: startTime!,
+                              endTime: endTime,
+                              isComplete: false,
+                              color: color));
+                      navigateWithReplacement(context, const HomeView());
+                    },
                     width: 150,
                   ),
                 ],
