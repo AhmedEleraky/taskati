@@ -13,8 +13,13 @@ class AppThemes {
     appBarTheme: AppBarTheme(
         backgroundColor: ProjectColors.white,
         foregroundColor: ProjectColors.primary),
+    colorScheme: ColorScheme.fromSeed(
+      primary: ProjectColors.primary,
+      background: ProjectColors.white,
+      onSurface: ProjectColors.black,
+      seedColor: ProjectColors.primary,
+    ),
     inputDecorationTheme: InputDecorationTheme(
-      
       enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: ProjectColors.primary, width: 2)),
@@ -36,6 +41,12 @@ class AppThemes {
     appBarTheme: AppBarTheme(
         backgroundColor: ProjectColors.black,
         foregroundColor: ProjectColors.primary),
+    colorScheme: ColorScheme.fromSeed(
+      primary: ProjectColors.primary,
+      background: ProjectColors.black,
+      onSurface: ProjectColors.white,
+      seedColor: ProjectColors.primary,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

@@ -35,7 +35,7 @@ class TaskItem extends StatelessWidget {
                 Text(
                   model.title,
                   style: getTitleStyle(
-                      color: ProjectColors.white, fontWeight: FontWeight.bold),
+                    context,  color: ProjectColors.white, fontWeight: FontWeight.bold),
                 ),
                 const Gap(5),
                 Row(
@@ -56,7 +56,7 @@ class TaskItem extends StatelessWidget {
                   model.note,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: getbodyStyle(color: ProjectColors.white),
+                  style: getbodyStyle(context, color: ProjectColors.white),
                 )
               ],
             ),
@@ -71,7 +71,7 @@ class TaskItem extends StatelessWidget {
               quarterTurns: 3,
               child: Text(
                 model.isComplete ? 'Completed' : 'To Do',
-                style: getbodyStyle(color: ProjectColors.white),
+                style: getbodyStyle(context, color: ProjectColors.white),
               )),
         ],
       ),

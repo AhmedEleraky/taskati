@@ -4,6 +4,7 @@ import 'package:taskati/features/data/task_model.dart';
 class ProjectLocalStorage {
   static late Box box;
   static late Box<TaskModel> taskBox;
+  
   init() {
     box = Hive.box('user');
     taskBox = Hive.box('task');

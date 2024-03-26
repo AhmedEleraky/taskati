@@ -10,6 +10,7 @@ void main() async {
   await Hive.openBox('user');
   Hive.registerAdapter(TaskModelAdapter());
   await Hive.openBox<TaskModel>('task');
+  await Hive.openBox<bool>('mode');
   ProjectLocalStorage().init();
   runApp(const MainApp());
 }

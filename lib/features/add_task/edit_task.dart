@@ -9,28 +9,29 @@ import 'package:taskati/core/widgets/custom_button.dart';
 import 'package:taskati/features/data/task_model.dart';
 import 'package:taskati/features/home/presentation/views/home_view.dart';
 
-class AddTaskView extends StatefulWidget {
-  const AddTaskView({super.key, this.model});
-  final TaskModel? model;
+class EditTaskView extends StatefulWidget {
+  const EditTaskView({super.key, required this.model});
 
+  final TaskModel model;
   @override
-  State<AddTaskView> createState() => _AddTaskViewState();
+  State<EditTaskView> createState() => _EditTaskViewState();
 }
 
-class _AddTaskViewState extends State<AddTaskView> {
+class _EditTaskViewState extends State<EditTaskView> {
   var titleController = TextEditingController();
   var noteController = TextEditingController();
-  var date = DateFormat('dd/MM/yyyy').format(DateTime.now());
-  String? startTime = DateFormat('hh:mm: a').format(DateTime.now());
-  var endTime = DateFormat('hh:mm: a')
-      .format(DateTime.now().add(const Duration(minutes: 30)));
+  var date;
+  String? startTime;
+  var endTime;
   int color = 0;
 
   @override
   void initState() {
-    titleController = TextEditingController(text: widget.model?.title);
-    noteController = TextEditingController(text: widget.model?.note);
-
+    titleController = TextEditingController(text: widget.model.title);
+    noteController = TextEditingController(text: widget.model.note);
+    date = widget.model.date;
+    startTime = widget.model.startTime;
+    endTime = widget.model.endTime;
     super.initState();
   }
 
@@ -41,7 +42,7 @@ class _AddTaskViewState extends State<AddTaskView> {
       appBar: AppBar(
         foregroundColor: ProjectColors.primary,
         centerTitle: true,
-        title: Text('Add Task', style: getTitleStyle(context)),
+        title: Text('Edit Task', style: getTitleStyle(context)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -111,7 +112,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                     if (value != null) {
                       setState(() {
                         date = widget.model != null
-                            ? widget.model!.date
+                            ? widget.model.date
                             : DateFormat('dd/MM/yyyy').format(value);
                       });
                     } else {}
@@ -256,12 +257,10 @@ class _AddTaskViewState extends State<AddTaskView> {
                   CustomButton(
                     text: 'Save Task',
                     onPressed: () {
-                      String id = '${titleController.text}${DateTime.now()}';
-
                       ProjectLocalStorage.casheTask(
-                          id,
+                          widget.model.id,
                           TaskModel(
-                              id: id,
+                              id: widget.model.id,
                               title: titleController.text,
                               note: noteController.text,
                               date: date,

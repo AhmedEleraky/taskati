@@ -39,12 +39,13 @@ class _HomeHeaderState extends State<HomeHeader> {
           children: [
             Text(
               'Hello, ${name.isEmpty ? '' : name}',
-              style: getTitleStyle(),
+              style: getTitleStyle(context, color: ProjectColors.primary),
             ),
             Text(
               'Have a Nice Day!',
               style: getbodyStyle(
-                  color: darkMode ? ProjectColors.white : ProjectColors.black),
+                context,
+              ),
             ),
           ],
         ),

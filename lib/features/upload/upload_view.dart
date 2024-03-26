@@ -45,7 +45,7 @@ class _LoginViewState extends State<LoginView> {
               },
               child: Text(
                 'Done',
-                style: getTitleStyle(),
+                style: getTitleStyle(context),
               )),
         ],
       ),

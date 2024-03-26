@@ -8,6 +8,7 @@ import 'package:taskati/core/function/routing.dart';
 import 'package:taskati/core/utils/colors.dart';
 import 'package:taskati/core/utils/text_style.dart';
 import 'package:taskati/core/widgets/custom_button.dart';
+import 'package:taskati/features/add_task/edit_task.dart';
 import 'package:taskati/features/add_task/view/add_task_view.dart';
 import 'package:taskati/features/data/task_model.dart';
 import 'package:taskati/features/home/presentation/widgets/home_header.dart';
@@ -24,8 +25,6 @@ class _HomeViewState extends State<HomeView> {
   String _selectedValue = DateFormat('dd/MM/yyyy').format(DateTime.now());
   @override
   Widget build(BuildContext context) {
-    final box = Hive.box('user');
-    var darkMode = box.get('darkMode');
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -39,18 +38,17 @@ class _HomeViewState extends State<HomeView> {
                   Column(
                     children: [
                       Text(
+                        DateFormat.MMMMEEEEd().format(DateTime.now()),
+                        style: getTitleStyle(
+                          context,
+                        ),
+                      ),
+                      const Gap(5),
+                      Text(
                         'Today',
                         style: getTitleStyle(
-                            color: darkMode
-                                ? ProjectColors.white
-                                : ProjectColors.black),
-                      ),
-                      Text(
-                        DateFormat('dd/MM/yyyy').format(DateTime.now()),
-                        style: getTitleStyle(
-                            color: darkMode
-                                ? ProjectColors.white
-                                : ProjectColors.black),
+                          context,
+                        ),
                       ),
                     ],
                   ),
@@ -67,23 +65,17 @@ class _HomeViewState extends State<HomeView> {
               const Gap(15),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                children: [
                   DatePicker(
                     DateTime.now().add(const Duration(days: -2)),
                     height: 100,
                     width: 80,
                     dateTextStyle: TextStyle(
-                        color: darkMode
-                            ? ProjectColors.white
-                            : ProjectColors.black),
+                        color: Theme.of(context).colorScheme.onSurface),
                     dayTextStyle: TextStyle(
-                        color: darkMode
-                            ? ProjectColors.white
-                            : ProjectColors.black),
+                        color: Theme.of(context).colorScheme.onSurface),
                     monthTextStyle: TextStyle(
-                        color: darkMode
-                            ? ProjectColors.white
-                            : ProjectColors.black),
+                        color: Theme.of(context).colorScheme.onSurface),
                     initialSelectedDate: DateTime.now(),
                     selectionColor: ProjectColors.primary,
                     selectedTextColor: Colors.white,
@@ -114,8 +106,8 @@ class _HomeViewState extends State<HomeView> {
                             Lottie.asset('asset/emptyblue.json'),
                             Text(
                               'No Tasks Today!',
-                              style: getTitleStyle(),
-                            )
+                              style: getTitleStyle(context),
+                            ),
                           ],
                         ),
                       );
@@ -138,7 +130,7 @@ class _HomeViewState extends State<HomeView> {
                                     const Gap(5),
                                     Text(
                                       'Completed',
-                                      style: getbodyStyle(
+                                      style: getbodyStyle(context,
                                           color: ProjectColors.white),
                                     ),
                                   ],
@@ -157,7 +149,7 @@ class _HomeViewState extends State<HomeView> {
                                     const Gap(5),
                                     Text(
                                       'Deleted',
-                                      style: getbodyStyle(
+                                      style: getbodyStyle(context,
                                           color: ProjectColors.white),
                                     ),
                                   ],
@@ -182,7 +174,8 @@ class _HomeViewState extends State<HomeView> {
                               },
                               child: TaskItem(model: tasks[index])),
                           onTap: () {
-                            navigateTo(context, const AddTaskView());
+                            navigateTo(
+                                context, EditTaskView(model: tasks[index]));
                           },
                         );
                       },
