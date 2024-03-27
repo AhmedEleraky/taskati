@@ -5,10 +5,13 @@ import 'package:gap/gap.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:taskati/core/constants/asset_image.dart';
+import 'package:taskati/core/function/routing.dart';
 import 'package:taskati/core/services/local_storage.dart';
 import 'package:taskati/core/utils/colors.dart';
 import 'package:taskati/core/utils/text_style.dart';
 import 'package:taskati/core/widgets/custom_button.dart';
+import 'package:taskati/features/home/presentation/views/home_view.dart';
+import 'package:taskati/features/profile/widget/show_dialog.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -31,11 +34,17 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     final box = Hive.box('user');
-
     var darkMode = box.get('darkMode') ?? false;
+
     return Scaffold(
       appBar: AppBar(
         foregroundColor: ProjectColors.primary,
+        leading: IconButton(
+            onPressed: () {
+              setState(() {});
+              navigateTo(context, const HomeView());
+            },
+            icon: const Icon(Icons.arrow_back)),
         actions: [
           IconButton(
             icon: Icon(
@@ -102,26 +111,22 @@ class _ProfileViewState extends State<ProfileView> {
                                                 children: [
                                                   CustomButton(
                                                     width: double.infinity,
-                                                    onPressed: () async {
-                                                      await uploadFromCamera()
-                                                          .then((value) {
-                                                        setState(() {});
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      });
+                                                    onPressed: () {
+                                                      uploadFromCamera();
+                                                      setState(() {});
+                                                      Navigator.of(context)
+                                                          .pop();
                                                     },
                                                     text: 'Upload form Camera',
                                                   ),
                                                   const Gap(15),
                                                   CustomButton(
                                                       width: double.infinity,
-                                                      onPressed: () async {
-                                                        await uploadFromGallery()
-                                                            .then((value) {
-                                                          setState(() {});
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        });
+                                                      onPressed: () {
+                                                        uploadFromGallery();
+                                                        setState(() {});
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
                                                       text:
                                                           'Upload form Gallery'),
@@ -148,7 +153,7 @@ class _ProfileViewState extends State<ProfileView> {
                     Row(
                       children: [
                         Text(
-                          name,
+                          ProjectLocalStorage.getCashedData('name'),
                           style: getTitleStyle(context,
                               color: ProjectColors.primary),
                         ),
@@ -162,43 +167,8 @@ class _ProfileViewState extends State<ProfileView> {
                                 Theme.of(context).colorScheme.background,
                             child: IconButton(
                               onPressed: () {
-                                showModalBottomSheet(
-                                   
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) {
-                                    return Container(
-                                      
-                                      decoration: const BoxDecoration(),
-                                      height: 200,
-                                      width: double.infinity,
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15),
-                                          child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                TextFormField(
-                                                  onChanged: (value) {
-                                                    name = value;
-                                                  },
-                                                ),
-                                                const Gap(15),
-                                                CustomButton(
-                                                    width: double.infinity,
-                                                    onPressed: () {
-                                                      setState(() {});
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    text: 'Update your name'),
-                                              ]),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
+                                showTextDialog(context, name);
+                                setState(() {});
                               },
                               icon: const Icon(Icons.edit_rounded),
                               color: ProjectColors.primary,
@@ -220,10 +190,10 @@ class _ProfileViewState extends State<ProfileView> {
         await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (pickedImage != null) {
-      ProjectLocalStorage.casheData(path, pickedImage.path);
-      return pickedImage.path;
-    } else {
-      return null;
+      ProjectLocalStorage.casheData('image', pickedImage.path);
+      setState(() {
+        path = pickedImage.path;
+      });
     }
   }
 
@@ -232,10 +202,10 @@ class _ProfileViewState extends State<ProfileView> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
-      ProjectLocalStorage.casheData(path, pickedImage.path);
-      return pickedImage.path;
-    } else {
-      return null;
+      ProjectLocalStorage.casheData('image', pickedImage.path);
+      setState(() {
+        path = pickedImage.path;
+      });
     }
   }
 }
